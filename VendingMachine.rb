@@ -1,62 +1,109 @@
-class VendingMachine
-  # 投入できるお金を設定する。.freezeによって、値が変わることを防ぐ
-  MONEY = [10, 50, 100, 500, 1000].freeze
-
-  def drink_list
-  drinks = [{drink: "コーラ", price: 120, stock: 5},
-            {drink: "レッドブル", price: 200, stock: 5}]
-  #drinks
-  end
-
+class SlotMoney
   # 初期化。投入金額を0円にする
   def initialize
     @slot_money = 0
+    @change_money = 0
   end
 
-    # 投入金額を足していくメゾット
-  def slot_money(money)
-    return false unless MONEY.include?(money)
-    @slot_money += money
+  MONEY = [10, 50, 100, 500, 1000].freeze
+
+  def slot_money
+    puts "a:入金を止める, 半角数字:お金を入れる"
+    while true 
+      input = gets.chomp 
+      return false if input == "a"
+      money = input.to_i
+      if MONEY.include?(money)
+        @slot_money += money
+      elsif input =~ /^[0-9]+$/
+        @change_money += money
+      else
+        puts "aまたは半角数字を入力してください"
+      end
+    end
   end
 
-  # 合計金額だけを出力する
   def current_slot_money
     @slot_money
   end
+  
+  def change_money
+    @change_money
+  end
+end
 
-  def buy_drink
+class VendingMachine
+  # 投入できるお金を設定する。.freezeによって、値が変わることを防ぐ
+  def initialize
+    drink_name = []
+  end
+
+  def drink_list
+  drinks = [{drink: "コーラ", price: 120, stock: 5},
+            {drink: "レッドブル", price: 200, stock: 5},
+            {drink: "水", price: 100, stock: 5}]
+
+  end
+
+  def buy_drink(current_slot_money)
     # current_slot_maneyと、全ての飲み物のpriceを比較して、
     # current_slot_maney >= priceになる商品だけ並べる
     can_buy_drink = []
+    can_buy_drink_name = []
+    
     drink_list.each do | drink |
-        if current_slot_money >= drink[:price]
+      if current_slot_money >= drink[:price] && drink[:stock] > 0
           can_buy_drink << drink
-        else
+          can_buy_drink_name << drink[:drink]
       end
     end
 
-    can_buy_drink
-    binding.irb
+    puts "購入したい商品名を入力してください。"
+    can_buy_drink.each do | list |
+      puts "#{list[:drink]}:#{list[:price]}円"
+    end
 
+    input_buy_drink = gets.chomp
+
+    if can_buy_drink_name.include?(input_buy_drink)
+      puts "一致しています！"
+    end
+
+    # can_buy_drink
+    # binding.irb
 
     # 並んだ商品の番号（id？）を選択すると、購入できる
     
     # 買った商品に応じて、売上が加算される
 
     # if current_slot_money
-  end
+  # end
 
-  # お釣りの値を返す
-  def return_money
-    puts @slot_money
-    @slot_money = 0
+  # # お釣りの値を返す
+  # def return_money
+  #   puts @slot_money
+  #   @slot_money = 0
+  # end
   end
 end
 
-set_vm = VendingMachine.new
-# set_vm.slot_money(150)
-set_vm.slot_money(150).current_slot_money.buy_drink
-# puts set.drink_list[0][:drink]
+# ————————————————————————————————————————
+# 実行テスト
+# ————————————————————————————————————————
+
+# slot = SlotMoney.new
+# slot.slot_money
+
+# current_slot_money = slot.current_slot_money
+# change_money = slot.change_money
+
+# puts "使えるお金:#{cs_maney}円"
+# puts "そのままお釣りになるお金:#{ch_maney}円"
+
+vending_machine = VendingMachine.new
+drink = vending_machine.buy_drink(500)
+puts drink
+
 # ————————————————————————————————————————
 
 # step2
@@ -89,7 +136,3 @@ set_vm.slot_money(150).current_slot_money.buy_drink
 # ・売上合計
 
 # ————————————————————————————————————————
-
-# vm = VendingMachine.new
-# vm.slot_money(100)
-# p vm.current_slot_money
