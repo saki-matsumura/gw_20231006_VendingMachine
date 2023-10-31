@@ -39,7 +39,6 @@ end
 
 class VendingMachine
   def initialize(slot_money)
-    # drink_name = []      #ドリンクネームの初期化
     @slot_money = slot_money
     @sales = 0         # 売上の金額
     default_stock = 5
@@ -63,12 +62,11 @@ class VendingMachine
     input_buy_drink = gets.chomp
     drink_kinds = drink_list.length - 1
 
-    array = ["a", *"0".."#{drink_kinds}"]
+    input_check = ["a", *"0".."#{drink_kinds}"]
 
-    if (array).include?(input_buy_drink) 
+    if (input_check).include?(input_buy_drink) 
 
       if input_buy_drink == "a"
-        # 払い戻し
         puts "払い戻し" 
 
       else
@@ -77,7 +75,7 @@ class VendingMachine
         price = @drinks[input_buy_drink][:price]
         stock = @drinks[input_buy_drink][:stock]
 
-        if @slot_money >= price && stock > 0
+        if @slot_money >= price && stock.positive?
           @slot_money = @slot_money - price
           @drinks[input_buy_drink][:stock] = stock -1
           @sales += price
