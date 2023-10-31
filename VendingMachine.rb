@@ -6,7 +6,7 @@ class SlotMoney
     @change_money = 0  # お釣りの金額
   end
 
-    # 投入できるお金を設定する。.freezeによって、値が変わることを防ぐ
+  # 投入できるお金を設定する。.freezeによって、値が変わることを防ぐ
   MONEY = [10, 50, 100, 500, 1000].freeze
 
   # 入金と、払い戻しの仕組み
@@ -42,7 +42,7 @@ class VendingMachine
     # drink_name = []      #ドリンクネームの初期化
     @slot_money = slot_money
     @sales = 0         # 売上の金額
-    default_stock = 0
+    default_stock = 5
     @drinks = [{drink: "コーラ", price: 120, stock: default_stock},   
                {drink: "レッドブル", price: 200, stock: default_stock},
                {drink: "水", price: 100, stock: default_stock}]
@@ -60,28 +60,29 @@ class VendingMachine
       puts "#{index}:#{drink[:drink]}:#{drink[:price]}円"
     end
 
-    input_buy_drink = gets.chomp.to_i
+    input_buy_drink = gets.chomp
     drink_kinds = drink_list.length - 1
 
-    array = ["a", *0..drink_kinds]
+    array = ["a", *"0".."#{drink_kinds}"]
 
     if (array).include?(input_buy_drink) 
 
       if input_buy_drink == "a"
         # 払い戻し
-        puts "払い戻し"
+        puts "払い戻し" 
 
       else
-      drink = @drinks[input_buy_drink][:drink]
-      price = @drinks[input_buy_drink][:price]
-      stock = @drinks[input_buy_drink][:stock]
+        input_buy_drink = input_buy_drink.to_i
+        drink = @drinks[input_buy_drink][:drink]
+        price = @drinks[input_buy_drink][:price]
+        stock = @drinks[input_buy_drink][:stock]
 
-      if @slot_money >= price && stock > 0
+        if @slot_money >= price && stock > 0
           @slot_money = @slot_money - price
           @drinks[input_buy_drink][:stock] = stock -1
           @sales += price
 
-          puts "お買い上げありがとうございました。\n商品　:#{drink},\nお釣り:#{@slot_money},\n売上　：#{@sales}"
+          puts "お買い上げありがとうございました。\n商品　:#{drink}\nお釣り:#{@slot_money}円\n売上　:#{@sales}円"
         else
           puts "購入できませんでした。"
           puts "お金が足りません。残高：#{@slot_money}円"  if @slot_money < price
@@ -92,57 +93,10 @@ class VendingMachine
   end
 end
 
-# ————————————————————————————————————————
-# 実行テスト
-# ————————————————————————————————————————
-
-# slot = SlotMoney.new
-# slot.slot_money
-
-# current_slot_money = slot.current_slot_money
-# change_money = slot.change_money
-
-# puts "使えるお金:#{cs_maney}円"
-# puts "そのままお釣りになるお金:#{ch_maney}円"
-
+# 実行
 money = SlotMoney.new
 money.slot_money
 slot_money = money.current_slot_money
 
 vending_machine = VendingMachine.new(slot_money)
 vending_machine.buy_drink
-# drink = vending_machine.buy_drink(500)
-# puts drink
-
-# ————————————————————————————————————————
-
-# step2
-# ・商品の情報を入れるメソッド？が必要そう
-# 　{[drink:"コーラ"],[price:120],[stock:5]},{[drink:"レッドブル"],[price:120],[stock:5]}
-
-# step3
-# ・買えるかどうかの判定
-#  ifでcurrent_slot_money>=コーラのpriceだったら、購入可能
-
-# ・購入されたら、stockを減らす
-
-# ・売上金額を合計するメソッドが必要そう
-
-# ・@slot_moneyから、購入した金額分差し引くメソッドが必要そう
-
-# step4
-# ・商品の情報に他の飲み物の情報を追加する
-# ・購入可能な商品一覧を出力するメソッドが必要そう
-
-# step5
-# ・お釣りを正確に出力するメソッドが必要そう
-
-# - - - - - - -
-# 必要なもの
-# ▼ メソッド
-# ・
-# ▼ 変数
-# ・商品（ハッシュ）
-# ・売上合計
-
-# ————————————————————————————————————————
